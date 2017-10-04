@@ -1,3 +1,5 @@
+let canvas = null;
+
 exports.asyncLoop = (iterations, func, callback) => {
   let index = 0;
   let done = false;
@@ -31,14 +33,17 @@ exports.asyncLoop = (iterations, func, callback) => {
   return loop;
 }
 
-
 let getCanvas = () => {
-  return document.querySelector('#demoCanvas');
+  if(!canvas) {
+    canvas = document.querySelector('#demoCanvas');
+  }
+
+  return canvas;
 }
 
 let getMouseCoordinates = (canvas, e) => {
-  console.log(canvas);
   let rect = canvas.getBoundingClientRect();
+  
   return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top,

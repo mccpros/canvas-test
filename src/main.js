@@ -7,16 +7,23 @@ import Circle from './Circle';
   createjs.Ticker.setFPS(60);
   createjs.Ticker.addEventListener('tick', stage);
 
-  for(let i = 0; i < 10; i++) {
-    let iteration = i * 100;
-    let circle = new Circle({
-      r: 50,
-      x: 100,
-      y: 100 + iteration,
-      start: 100,
-      end: 400
-    });
-    stage.addChild(circle.shape);
+  let space = 50;
+  for(let i = 0; i < 15; i++) {
+    for(let ii = 0; ii < 15; ii++) {
+      let iterationY = i * space;
+      let iterationX = ii * space;
+      let circle = new Circle({
+        r: 5,
+        x: 100 + iterationX,
+        y: 100 + iterationY,
+        startX: 100 + iterationX,
+        startY: 100 + iterationY,
+        end: 400
+      });
+      stage.addChild(circle.wrap);
+      stage.addChild(circle.hitbox);
+      stage.addChild(circle.shape);
+    }
   }
 
 })();
