@@ -1,62 +1,49 @@
-import { asyncLoop, getCanvas, getMouseCoordinates } from './common';
+import { asyncLoop, getCanvas, getMouseCoordinates, getContext } from './common';
 
 export default class Node {
   constructor(dict) {
     // Remeber Your Origins
     // Don't forget where you started
     // Home is where the coords are
-    this.startX = dict.startX;
-    this.startY = dict.startY;
-    this.r      = dict.r;
+    this.x = dict.x;
+    this.y = dict.y;
+    this.ox = dict.x;
+    this.oy = dict.y;
+    this.vx = dict.vx;
+    this.vy = dict.vy;
+    // this.r  = dict.r;
 
     // Probably not needed anymore
-    this.end = dict.end;
-
-    // Animation flag, Don't start something else
-    this.animating = false;
-
-    // Barrier of movement
-    // Not Used yet, should be used for error checking
-    this.barrier = dict.r * 10;
-
-    // This will hold the mouse location
-    // For initial hitbox
-    this.mouseCoords = { x: 0, y: 0 };
-    this.hitCoords = { x: 0, y: 0 };
+    // this.end = dict.end;
+    //
+    // // Animation flag, Don't start something else
+    // this.animating = false;
+    //
+    // // This will hold the mouse location
+    // // For initial hitbox
+    // this.mouseCoords = { x: 0, y: 0 };
 
     // Bind it
-    this.move = this.move.bind(this);
-    this.reverb = this.reverb.bind(this);
-    this.enableAnimate = this.enableAnimate.bind(this);
-    this.disableAnimate = this.disableAnimate.bind(this);
-    this.createNode = this.createNode.bind(this);
-    this.getMouse = this.getMouse.bind(this);
-    this.mouseEnter = this.mouseEnter.bind(this);
-    this.mouseLeave = this.mouseLeave.bind(this);
+    // this.move = this.move.bind(this);
+    // this.reverb = this.reverb.bind(this);
+    // this.createNode = this.createNode.bind(this);
 
-    this.createNode('shape', 'DeepSkyBlue', dict, dict.r); // Create Node
-    this.createNode('wrap', 'transparent', dict, dict.r * 10);  // Create Barrier
-
-    this.shape.addEventListener('mouseover', this.move);     // If touched
-    this.wrap.addEventListener('mouseover', this.mouseEnter); // Inside barrier
-    this.wrap.addEventListener('mouseout', this.mouseLeave);  // Outside barrier
+    // this.createNode('shape', 'DeepSkyBlue', dict, dict.r); // Create Node
   }
 
   // Make a Circle
-  createNode(name, color, dict, r) {
-    this[name] = new createjs.Shape();
-    this[name].graphics.beginFill(color).drawCircle(0, 0, r);
-    this[name].x = dict.x;
-    this[name].y = dict.y;
-  }
+  // createNode(name, color, dict) {
+  //   this[name] = new createjs.Shape();
+  //   this[name].graphics.beginFill(color).drawCircle(0, 0, dict.r);
+  //   this[name].x = dict.x;
+  //   this[name].y = dict.y;
+  // }
 
   move(e) {
     // Don't stack animations!
     // But maybe we will later!
     if(this.animating) return;
     this.disableAnimate();
-
-    this.getMouse(e);
 
     this.hitCoords = this.mouseCoords;
 
@@ -101,46 +88,9 @@ export default class Node {
     }.bind(this), () => {
 
       // Animation loop ends
-      // this.attemptToReturn();
-      this.enableAnimate();
+      console.log('END');
     })
   }
 
-  // Track mouse in barrier
-  mouseEnter(e) {
-    let canvas = getCanvas();
-    canvas.addEventListener('mousemove', this.getMouse);
-  }
 
-  // End track mouse event above
-  mouseLeave() {
-    let canvas = getCanvas();
-    canvas.removeEventListener('mousemove', this.getMouse);
-  }
-
-  getMouse(e) {
-    // if(this.shape.x !== this.startX ||
-    //     this.shape.y !== this.startY) {
-    //       this.attemptToReturn();
-    //     }
-    let canvas = getCanvas();
-
-    // Grab mouse coords
-    // getMouseCoordinates defined in "common.js"
-    this.mouseCoords = getMouseCoordinates(canvas, e);
-  }
-
-  attemptToReturn() {
-    let amountToMove = 0;
-
-
-  }
-
-  disableAnimate() {
-    this.animating = true;
-  }
-
-  enableAnimate() {
-    this.animating = false;
-  }
 }

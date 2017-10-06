@@ -35,15 +35,20 @@ exports.asyncLoop = (iterations, func, callback) => {
 
 let getCanvas = () => {
   if(!canvas) {
-    canvas = document.querySelector('#demoCanvas');
+    canvas = document.querySelector('#canvas');
   }
 
   return canvas;
 }
 
+exports.getContext = () => {
+  if(!canvas) canvas = getCanvas();
+  return canvas.getContext( '2d' );
+}
+
 let getMouseCoordinates = (canvas, e) => {
   let rect = canvas.getBoundingClientRect();
-  
+
   return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top,
