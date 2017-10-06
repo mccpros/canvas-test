@@ -1,9 +1,12 @@
-const ROWS = 40,
-      COLS = 40,
+import Stats from './stats';
+import { renderNodes } from './common';
+
+const SPACING = 5,
+      ROWS = Math.max(window.innerHeight / SPACING),
+      COLS = Math.max(window.innerWidth / SPACING),
       CIRCLE_PARTICLES = ROWS * COLS ,
       THICKNESS = Math.pow(60, 2 ),
-      SPACING = 10,
-      MARGIN = 100,
+      MARGIN = 0,
       COLOR = 117,
       DRAG = 0.95,
       EASE = 0.25;
@@ -29,6 +32,9 @@ let circle = {
   y: 0
 };
 
+stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
 function init() {
 
   let container = document.getElementById( 'container' );
@@ -39,8 +45,8 @@ function init() {
   w = canvas.width = COLS * SPACING + MARGIN * 2;
   h = canvas.height = ROWS * SPACING + MARGIN * 2;
 
-  container.style.marginLeft = Math.round( w * -0.5 ) + 'px';
-  container.style.marginTop = Math.round( h * -0.5 ) + 'px';
+  // container.style.marginLeft = Math.round( w * -0.5 ) + 'px';
+  // container.style.marginTop = Math.round( h * -0.5 ) + 'px';
 
   for ( i = 0; i < CIRCLE_PARTICLES; i++ ) {
     let c = Object.create( circle );
@@ -60,7 +66,7 @@ function init() {
 }
 
 function step() {
-
+  stats.begin();
   if ( tog = !tog ) {
 
     for ( i = 0; i < CIRCLE_PARTICLES; i++ ) {
@@ -82,28 +88,10 @@ function step() {
 
   } else {
 
-    let count = 0;
-    b = ( a = ctx.createImageData( w, h ) ).data;
-
-    for ( i = 0; i < CIRCLE_PARTICLES; i++ ) {
-      let c = list[i];
-
-      b[n = ( ~~c.x + ( ~~c.y * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x+1 + ( ~~c.y * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x + ( (~~c.y + 1) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x + 1 + ( (~~c.y + 1) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-
-      b[n = ( ~~c.x+ 2 + ( ~~c.y * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x + 2 + ( (~~c.y + 1) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x + 2 + ( (~~c.y + 2) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x + 1 + ( (~~c.y + 2) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-      b[n = ( ~~c.x  + ( (~~c.y + 2) * w ) ) * 4] = 255, b[n+1] = b[n+2] = COLOR, b[n+3] = 220;
-
-    }
-
-    ctx.putImageData( a, 0, 0 );
+    renderNodes(list);
   }
 
+  stats.end();
   requestAnimationFrame( step );
 }
 
